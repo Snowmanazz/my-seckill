@@ -1,0 +1,29 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+# 数据源配置
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.112.111:3306/sec_kill?allowPublicKeyRetrieval=true&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  #redis
+  redis:
+    host: 192.168.112.111
+    port: 6379
+    database: 0
+    password: 123456
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: 10000
+      min-idle: 0
+      timeout: 5000
+  #rabbitMq
+  rabbitmq:
+    host: 192.168.112.111
+    port: 5672
+    username: guest
+    password: guest
