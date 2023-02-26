@@ -1,9 +1,9 @@
 package com.snow.myseckill.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.snow.myseckill.mapper.GoodsMapper;
-import com.snow.myseckill.pojo.Goods;
+import com.snow.myseckill.mapper.SecKillGoodsMapper;
+
 import com.snow.myseckill.service.GoodsService;
+import com.snow.myseckill.vo.GoodsVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,16 +15,16 @@ import java.util.List;
 public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
-    private GoodsMapper goodsMapper;
+    private SecKillGoodsMapper goodsMapper;
 
     @Override
-    public Goods findOne(long gid) {
-        return goodsMapper.selectById(gid);
+    public GoodsVo findOne(long gid) {
+        return goodsMapper.getGoodsVoByGoodsId(gid);
     }
 
     @Override
-    public List<Goods> goodsList() {
-        return goodsMapper.selectList(new QueryWrapper<>());
+    public List<GoodsVo> goodsList() {
+        return goodsMapper.listGoodsVo();
     }
 
     /**

@@ -5,4 +5,8 @@ public class OrderKeyPrefix extends BasePrefix{
         super(prefix);
     }
     public static final OrderKeyPrefix ORDER_KEY = new OrderKeyPrefix("seckill");
+
+    public static String orderKey(long uid, long gid){
+        return uid + "_" + gid;
+    }
 }

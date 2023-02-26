@@ -1,14 +1,14 @@
 package com.snow.myseckill.service;
 
-import com.snow.myseckill.pojo.Goods;
+import com.snow.myseckill.vo.GoodsVo;
 
 import java.util.List;
 
 public interface GoodsService {
-    Goods findOne(long gid);
+    GoodsVo findOne(long gid);
 
     boolean reduceGood(long gid, long count);
 
-    List<Goods> goodsList();
+    List<GoodsVo> goodsList();
 
 }

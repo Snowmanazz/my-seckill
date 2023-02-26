@@ -10,6 +10,6 @@ public interface OrderService {
 
     OrderInfo getOrderInfo(long oid);
 
-    boolean createOrder(User user, Goods goods);
+    OrderInfo createOrder(User user, Goods goods);
 
 }

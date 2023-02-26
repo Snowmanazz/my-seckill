@@ -37,7 +37,7 @@ public class SecKillController {
     private SeckillService seckillService;
 
 
-    //内存标记，判断该商品是否卖光
+    //内存标记，判断该商品是否卖光,卖光为true
     private Map<Long, Boolean> localMap = new HashMap<>();
 
     @ApiOperation(value = "秒杀一(最low实现)")
@@ -54,13 +54,7 @@ public class SecKillController {
             return Result.error(CodeMsg.SECKILL_OVER);
         }
         //开始秒杀
-        Result<CodeMsg> result = seckillService.seckill1(user, goodsId);
-        //商品已经秒杀完成，存入内存标记
-        if (result.getData().equals(CodeMsg.SECKILL_OVER)){
-            log.info("存入内存标识商品");
-            localMap.put(goodsId, true);
-        }
-        return result;
+        return seckillService.seckill1(user, goodsId, localMap);
     }
 
 }
