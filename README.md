@@ -1,0 +1,3 @@
+# my-seckill
+springboot+redis+rabbitmq 
+to be continued........
