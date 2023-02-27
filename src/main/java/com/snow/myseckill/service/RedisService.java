@@ -48,5 +48,9 @@ public class RedisService {
         Objects.requireNonNull(key, "获取缓存的key为空");
         return operations.decrement(keyprefix.getprefix() + key);
     }
+    public boolean hasKey(Keyprefix keyprefix, String key){
+        Objects.requireNonNull(key, "查询的key为空");
+        return Boolean.TRUE.equals(redisTemplate.hasKey(keyprefix.getprefix() + key));
+    }
 
 }

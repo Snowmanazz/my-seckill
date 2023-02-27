@@ -27,3 +27,11 @@ spring:
     port: 5672
     username: guest
     password: guest
+    listener:
+      simple:
+        default-requeue-rejected: false
+        acknowledge-mode: manual  # 确认模式为手动确认-需要在代码中手动ACK
+        retry:
+          enabled: true           # 开启消费者出现异常情况下，进行重试消费，默认false
+          max-attempts: 10         # 最大重试次数，默认为3
+          initial-interval: 3000  # 重试间隔时间，默认1000(单位毫秒)

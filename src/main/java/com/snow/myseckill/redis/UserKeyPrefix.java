@@ -1,8 +1,8 @@
 package com.snow.myseckill.redis;
 
-public class UserKeyPrefix extends BasePrefix{
+public class UserKeyPrefix extends BasePrefix {
 
-    private static final int TOKEN_EXPIRE = 3600 * 24 *2;
+    private static final int TOKEN_EXPIRE = 3600 * 24 * 2;
 
     private UserKeyPrefix(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
