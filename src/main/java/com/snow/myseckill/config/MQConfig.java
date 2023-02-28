@@ -41,11 +41,10 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
      */
     @Override
     public void confirm(CorrelationData data, boolean ack, String cause) {
-        if (ack) {
-            log.info("{}消息成功到达交换机", data.getId());
-        } else {
-            log.error("{}未到达交换机，原因[{}]", data.getId(), cause);
-        }
+        log.info("确认消息送到交换机(Exchange)结果：");
+        log.info("相关数据：{}", data);
+        log.info("是否成功：{}", ack);
+        log.info("错误原因：{}", cause);
     }
 
     /**
@@ -55,7 +54,12 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
      */
     @Override
     public void returnedMessage(ReturnedMessage returnedMessage) {
-        log.error("{}消息未到达对列", returnedMessage.toString());
+        log.info("\n确认消息送到队列(Queue)结果：");
+        log.info("发生消息：{}", returnedMessage.getMessage());
+        log.info("回应码：{}", returnedMessage.getReplyCode());
+        log.info("回应信息：{}", returnedMessage.getReplyText());
+        log.info("交换机：{}", returnedMessage.getExchange());
+        log.info("路由键：{}", returnedMessage.getRoutingKey());
     }
 
     /**
@@ -82,12 +86,12 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
     }
 
     @Bean
-    public Binding bindingSecKillDirect(){
+    public Binding bindingSecKillDirect() {
         return BindingBuilder.bind(queue()).to(directExchange()).with(SEC_KILL_ROUTING_KEY);
     }
 
     @Bean
-    public Binding bindingTestDirect(){
+    public Binding bindingTestDirect() {
         return BindingBuilder.bind(testQueue()).to(directExchange()).with(TEST_ROUTING_KEY);
     }
 }
