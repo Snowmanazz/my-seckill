@@ -3,7 +3,9 @@ package com.snow.myseckill;
 import com.snow.myseckill.mapper.SecKillGoodsMapper;
 import com.snow.myseckill.mapper.OrderMapper;
 import com.snow.myseckill.mapper.UserMappper;
+import com.snow.myseckill.rabbitmq.MQSender;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,6 +22,9 @@ class MySeckillApplicationTests {
     private SecKillGoodsMapper goodsMapper;
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    MQSender mqSender;
     @Test
     void testRedis() {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
@@ -32,6 +37,11 @@ class MySeckillApplicationTests {
     void testMysql(){
         System.out.println(userMappper.selectById(18217272828L));
         System.out.println(goodsMapper.selectById(1));
+    }
+
+    @Test
+    void testRabbimq(){
+        mqSender.testSend();
     }
 
 }

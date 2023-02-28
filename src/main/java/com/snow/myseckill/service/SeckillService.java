@@ -78,15 +78,11 @@ public class SeckillService {
     public void seckillOrder(User user, long goodsId, int gcount) {
         //查询商品
         GoodsVo goods = goodsService.findOne(goodsId);
-        //再次判断商品库存
-        if (goods.getStockCount() <= 0) {
-            log.error("库存为[{}],秒杀失败", goods.getStockCount());
-            return;
-        }
         //减库存
         boolean success = goodsService.reduceGood(goodsId, gcount);
         if (success) {
             //下订单
+            log.info("数据库库存更新成功");
             OrderInfo order = orderService.createOrder(user, goods);
             //存redis
             if (order != null) {

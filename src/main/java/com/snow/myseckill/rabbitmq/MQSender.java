@@ -21,4 +21,8 @@ public class MQSender {
         log.info("send message [{}]", msg);
         amqpTemplate.convertAndSend(MQConfig.DIRECT_QUEUE, msg);
     }
+
+    public void testSend(){
+        amqpTemplate.convertAndSend(MQConfig.TEST_QUEUE, "this is test msg");
+    }
 }

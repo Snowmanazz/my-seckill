@@ -6,7 +6,6 @@ import com.snow.myseckill.pojo.OrderInfo;
 import com.snow.myseckill.pojo.SeckillOrder;
 import com.snow.myseckill.pojo.User;
 import com.snow.myseckill.service.OrderService;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderInfo createOrder(User user, Goods goods) {
+        log.info("开始创建订单---");
+        log.info("user-[{}], goods-[{}]", user, goods);
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateDate(new Date());
         orderInfo.setDeliveryAddrId(0L);
