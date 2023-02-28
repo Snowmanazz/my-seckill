@@ -1,14 +1,17 @@
 package com.snow.myseckill.redis;
 
+import java.util.Objects;
+
 public class BasePrefix implements Keyprefix {
     private int expireSeconds;
     private String prefix;
 
     public BasePrefix(String prefix) {
-        this(0, prefix);
+        this(-1, prefix);
     }
 
     public BasePrefix(int expireSeconds, String prefix) {
+        Objects.requireNonNull(prefix, "key prefix 不能为空");
         this.expireSeconds = expireSeconds;
         this.prefix = prefix + "-";
     }

@@ -92,6 +92,8 @@ public class SeckillService {
     }
 
     private void freshRedisStock() {
+        //删除之前缓存的keys
+        redisService.deleteBatch(GoodsKeyPrefix.GOOD_STACK, "*");
         List<GoodsVo> goodsList = goodsService.goodsList();
         if (goodsList == null || goodsList.isEmpty()) {
             return;

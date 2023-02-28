@@ -36,7 +36,7 @@ class MySeckillApplicationTests {
     @Test
     void testMysql(){
         System.out.println(userMappper.selectById(18217272828L));
-        System.out.println(goodsMapper.selectById(1));
+        System.out.println(goodsMapper.getGoodsVoByGoodsId(1));
     }
 
     @Test

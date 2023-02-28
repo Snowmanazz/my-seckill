@@ -40,7 +40,7 @@ public class MQReciver {
     @RabbitHandler
     public void testReceiver(String msg, Message message, Channel channel) {
         try {
-            //int a = 0/1
+//            int a = 0/1;
             log.info("get msg {}", msg);
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
