@@ -1,15 +1,14 @@
 package com.snow.myseckill.rabbitmq;
 
-import com.rabbitmq.client.Channel;
 import com.snow.myseckill.config.MQConfig;
 import com.snow.myseckill.pojo.SecKillMsg;
 import com.snow.myseckill.service.SeckillService;
 import com.snow.myseckill.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 
 @Service
@@ -21,23 +20,16 @@ public class MQReciver {
 
     @RabbitListener(bindings = {
             @QueueBinding(
-                    value = @Queue(name = MQConfig.DIRECT_QUEUE),
-                    key = {MQConfig.SEC_KILL_ROUTING_KEY},
-                    exchange = @Exchange(name = MQConfig.DIRECT_EXCHANGE)
+                    value = @Queue(name = MQConfig.DIRECT_QUEUE),               //queue
+                    key = {MQConfig.SEC_KILL_ROUTING_KEY},                      //routing key
+                    exchange = @Exchange(name = MQConfig.DIRECT_EXCHANGE)       //exchange
             )
-    })
-    @RabbitHandler
-    public void secKill(String msg, Message message, Channel channel) {
+    }, concurrency = "2")                                                       //并发数
+    public void secKill(String msg) {
         log.info("receive msg [{}]", msg);
-        final long deliveryTag = message.getMessageProperties().getDeliveryTag();
-        try {
-            SecKillMsg killMsg = ConvertUtil.stringToBean(msg, SecKillMsg.class);
-            //减少库存 存入订单
-            seckillService.seckillOrder(killMsg.getUser(), killMsg.getGoodsId(), 1);
-            channel.basicAck(deliveryTag, false);
-        } catch (Exception e) {
-            log.error("秒杀失败, {}", e.getMessage());
-        }
+        SecKillMsg killMsg = ConvertUtil.stringToBean(msg, SecKillMsg.class);
+        //减少库存 存入订单
+        seckillService.seckillOrder(killMsg.getUser(), killMsg.getGoodsId(), 1);
         log.info("恭喜秒杀成功");
     }
 
@@ -47,13 +39,9 @@ public class MQReciver {
                     key = {MQConfig.TEST_ROUTING_KEY},
                     exchange = @Exchange(name = MQConfig.DIRECT_EXCHANGE)
             )
-    })
-    @RabbitHandler
+    }, concurrency = "2")
     public void testReceiver(String msg) {
-        try {
-            log.info("get msg {}", msg);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        log.info("get msg {}", msg);
+        log.info("resolve msg {}", msg);
     }
 }

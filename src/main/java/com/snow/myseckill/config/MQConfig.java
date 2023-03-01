@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.retry.MessageRecoverer;
+import org.springframework.amqp.rabbit.retry.RepublishMessageRecoverer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +17,20 @@ import javax.annotation.PostConstruct;
 public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnsCallback {
 
     public static final String DIRECT_QUEUE = "seckill";
+
     public static final String TEST_QUEUE = "test";
 
     public static final String DIRECT_EXCHANGE = "directExchange";
 
+    public static final String ERROR_EXCHANGE = "errorExchange";
+
     public static final String SEC_KILL_ROUTING_KEY = "seckill";
 
     public static final String TEST_ROUTING_KEY = "test";
+
+    public static final String ERROR_QUEUE = "error";
+
+    public static final String ERROR_ROUTING_KEY = "error";
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -33,7 +42,7 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
     }
 
     /**
-     * 手动ack，消息是否到达交换机
+     * 消息是否到达交换机
      *
      * @param data
      * @param ack
@@ -41,10 +50,11 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
      */
     @Override
     public void confirm(CorrelationData data, boolean ack, String cause) {
-        log.info("确认消息送到交换机(Exchange)结果：");
-        log.info("相关数据：{}", data);
-        log.info("是否成功：{}", ack);
-        log.info("错误原因：{}", cause);
+        if (!ack){
+            log.info("确认消息送到交换机(Exchange)结果：");
+            log.info("相关数据：{}", data);
+            log.info("错误原因：{}", cause);
+        }
     }
 
     /**
@@ -81,9 +91,20 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
     }
 
     @Bean
+    public Queue errorQueue() {
+        return new Queue(ERROR_QUEUE, true, false, false);
+    }
+
+    @Bean
     public DirectExchange directExchange() {
         return new DirectExchange(DIRECT_EXCHANGE);
     }
+
+    @Bean
+    public DirectExchange errorExchange() {
+        return new DirectExchange(ERROR_EXCHANGE, true, false);
+    }
+
 
     @Bean
     public Binding bindingSecKillDirect() {
@@ -94,4 +115,19 @@ public class MQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.
     public Binding bindingTestDirect() {
         return BindingBuilder.bind(testQueue()).to(directExchange()).with(TEST_ROUTING_KEY);
     }
+
+    @Bean
+    public Binding bindingErrorDirect() {
+        return BindingBuilder.bind(errorQueue()).to(errorExchange()).with(ERROR_ROUTING_KEY);
+    }
+
+    /**
+     * 设置MessageRecoverer
+     */
+    @Bean
+    public MessageRecoverer messageRecoverer() {
+        //AmqpTemplate和RabbitTemplate都可以
+        return new RepublishMessageRecoverer(rabbitTemplate, ERROR_EXCHANGE, ERROR_ROUTING_KEY);
+    }
+
 }

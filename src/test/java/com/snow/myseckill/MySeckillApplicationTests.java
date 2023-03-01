@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
+import java.util.concurrent.TimeUnit;
+
 @SpringBootTest
 class MySeckillApplicationTests {
 
@@ -40,8 +42,11 @@ class MySeckillApplicationTests {
     }
 
     @Test
-    void testRabbimq(){
-        mqSender.testSend();
+    void testRabbimq() throws InterruptedException {
+        for (int i = 0; i < 100; i++) {
+            TimeUnit.SECONDS.sleep(1);
+            mqSender.testSend();
+        }
     }
 
 }

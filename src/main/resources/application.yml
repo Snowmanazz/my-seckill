@@ -6,12 +6,12 @@ server:
 spring:
   datasource:
     username: root
-    password: 123456
-    url: jdbc:mysql://192.168.112.111:3306/sec_kill?allowPublicKeyRetrieval=true&useSSL=false
+    password: 12345
+    url: jdbc:mysql://localhost:3306/ssm?allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
   #redis
   redis:
-    host: 192.168.112.111
+    host: 192.168.10.100
     port: 6379
     database: 0
     password: 123456
@@ -23,9 +23,23 @@ spring:
       timeout: 5000
   #rabbitMq
   rabbitmq:
-    host: 192.168.112.111
+    host: localhost
     port: 5672
     username: guest
     password: guest
     publisher-returns: true
     publisher-confirm-type: correlated
+    listener:
+      simple:
+        # ACK模式(默认为auto)
+        acknowledge-mode: auto
+        # 重试机制 自动ack才需要
+        retry:
+          enabled: true #是否开启消费者重试
+          max-attempts: 3 #最大重试次数
+          initial-interval: 5000ms #重试间隔时间（单位毫秒）
+          max-interval: 1200000ms #重试最大时间间隔（单位毫秒）
+          # 乘子。间隔时间*乘子=下一次的间隔时间，不能超过max-interval
+          # 以本处为例：第一次间隔 5 秒，第二次间隔 10 秒，以此类推
+          multiplier: 2
+        default-requeue-rejected: false
