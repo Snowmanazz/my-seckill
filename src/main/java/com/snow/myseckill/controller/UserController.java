@@ -16,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Api(tags = "用户")
 @Slf4j
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -42,6 +44,16 @@ public class UserController {
         }
         return userService.login(response, loginVo);
     }
+
+    @ApiOperation("检查用户session信息")
+    @RequestMapping("/checkLogin")
+    public void checkLoginState(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+
+
+    }
+
+
 
 //    @ApiOperation("注册用户")
 //    @RequestMapping("/register")
