@@ -8,6 +8,7 @@ import com.snow.myseckill.result.CodeMsg;
 import com.snow.myseckill.result.Result;
 import com.snow.myseckill.service.RedisService;
 import com.snow.myseckill.service.UserService;
+import com.snow.myseckill.util.CookieUtil;
 import com.snow.myseckill.util.IdGenerator;
 import com.snow.myseckill.util.MD5Util;
 import com.snow.myseckill.vo.LoginVo;
@@ -16,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
@@ -69,24 +69,8 @@ public class UserServiceImpl implements UserService {
         }
         IdGenerator idGenerator = new IdGenerator(0);
         String token = "" + idGenerator.nextId();
-        addCookie(response, token, user);
+        CookieUtil.addCookie(response, token, user, redisService);
         return Result.success(token);
-    }
-
-    /**
-     * 添加到cookie缓存以及response
-     *
-     * @param response
-     * @param token
-     * @param user
-     */
-    private void addCookie(HttpServletResponse response, String token, User user) {
-        //添加到redis慌存，然后存入cookie
-        redisService.set(UserKeyPrefix.TOKEN, token, user);
-        Cookie cookie = new Cookie(UserKeyPrefix.TOKEN.getprefix(), token);
-        cookie.setMaxAge(UserKeyPrefix.TOKEN.expireSeconds());
-        cookie.setPath("/");
-        response.addCookie(cookie);
     }
 
     /**
@@ -105,7 +89,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         User user = redisService.get(UserKeyPrefix.TOKEN, token, User.class);
-        addCookie(response, token, user);
+        CookieUtil.addCookie(response, token, user, redisService);
         return user;
 
     }
