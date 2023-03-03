@@ -31,10 +31,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public OrderInfo createOrder(User user, Goods goods) {
-        log.info("开始创建订单---");
-        log.info("user-[{}], goods-[{}]", user, goods);
+        log.info("开始创建订单---------");
+        log.info("user-[{}],\ngoods-[{}]", user, goods);
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateDate(new Date());
         orderInfo.setDeliveryAddrId(0L);

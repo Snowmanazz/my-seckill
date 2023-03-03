@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Api(tags = "秒杀")
@@ -39,6 +38,7 @@ public class SecKillController {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
         //开始秒杀
+        log.info("验证登录通过，开始秒杀");
         return seckillService.seckill1(user, goodsId);
     }
 

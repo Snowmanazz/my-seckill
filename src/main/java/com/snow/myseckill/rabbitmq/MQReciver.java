@@ -2,13 +2,15 @@ package com.snow.myseckill.rabbitmq;
 
 import com.snow.myseckill.config.MQConfig;
 import com.snow.myseckill.pojo.SecKillMsg;
+import com.snow.myseckill.redis.OrderKeyPrefix;
+import com.snow.myseckill.result.CodeMsg;
+import com.snow.myseckill.result.Result;
 import com.snow.myseckill.service.SeckillService;
 import com.snow.myseckill.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 
 @Service
@@ -26,11 +28,16 @@ public class MQReciver {
             )
     }, concurrency = "2")                                                       //并发数
     public void secKill(String msg) {
-        log.info("receive msg [{}]", msg);
+        log.info("收到秒杀信息---------[{}]", msg);
         SecKillMsg killMsg = ConvertUtil.stringToBean(msg, SecKillMsg.class);
         //减少库存 存入订单
-        seckillService.seckillOrder(killMsg.getUser(), killMsg.getGoodsId(), 1);
-        log.info("恭喜秒杀成功");
+        log.info("正在下订单中---------");
+        boolean order = seckillService.seckillOrder(killMsg.getUser(), killMsg.getGoodsId(), 1);
+        if (order){
+            log.info("恭喜[{}]秒杀成功", killMsg.getUser().getNickname());
+        }else {
+            log.error("未知错误，请稍后再试");
+        }
     }
 
     @RabbitListener(bindings = {

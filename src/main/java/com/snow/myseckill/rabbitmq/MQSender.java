@@ -21,7 +21,7 @@ public class MQSender {
 
     public void sendSecKill(SecKillMsg secMsg) {
         String msg = ConvertUtil.beanToString(secMsg);
-        log.info("send message [{}]", msg);
+        log.info("发送秒杀信息---------[{}]", msg);
         rabbitTemplate.convertAndSend(MQConfig.DIRECT_EXCHANGE, MQConfig.SEC_KILL_ROUTING_KEY, msg, new CorrelationData(UUID.randomUUID().toString()));
     }
 

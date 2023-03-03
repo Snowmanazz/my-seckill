@@ -12,6 +12,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class CookieUtil {
+
+    public static final String TOKEN = "token";
+
     /**
      * 添加到cookie缓存以及response
      *
@@ -22,7 +25,7 @@ public class CookieUtil {
     public static void addCookie(HttpServletResponse response, String token, User user, RedisService redisService) {
         //添加到redis慌存，然后存入cookie
         redisService.set(UserKeyPrefix.TOKEN, token, user);
-        Cookie cookie = new Cookie(UserKeyPrefix.TOKEN.getprefix(), token);
+        Cookie cookie = new Cookie(TOKEN, token);
         cookie.setMaxAge(UserKeyPrefix.TOKEN.expireSeconds());
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -39,10 +42,15 @@ public class CookieUtil {
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             try {
-                if (cookie != null && UserKeyPrefix.TOKEN.getprefix().equals(URLDecoder.decode(cookie.getName(), "utf-8"))) {
+                if (cookie != null && TOKEN.equals(URLDecoder.decode(cookie.getName(), "utf-8"))) {
                     String token = cookie.getValue();
                     if (StringUtils.isNoneBlank(token)) {
-                        return redisService.get(UserKeyPrefix.TOKEN, token, User.class);
+                        User user = redisService.get(UserKeyPrefix.TOKEN, token, User.class);
+                        if (user != null) {
+                            //刷新token
+                            redisService.expire(UserKeyPrefix.TOKEN, token);
+                        }
+                        return user;
                     }
                 }
             } catch (UnsupportedEncodingException e) {

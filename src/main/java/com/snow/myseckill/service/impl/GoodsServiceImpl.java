@@ -37,8 +37,8 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public boolean reduceGood(long gid, long count) {
         //减少库存
-        return goodsMapper.reduceGoods(gid, count) > 0;
+        Integer reduce = goodsMapper.reduceGoods(gid, count);
+        return reduce != null && reduce > 0;
     }
-
 
 }

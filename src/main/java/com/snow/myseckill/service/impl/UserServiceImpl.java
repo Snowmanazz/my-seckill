@@ -63,13 +63,15 @@ public class UserServiceImpl implements UserService {
         }
         String dbPass = user.getPassword();
         String salt = user.getSalt();
-        String calcPass = MD5Util.formPassToDBPass(password, salt);
+        String calcPass = MD5Util.inputPassToDbPass(password, salt);
         if (!Objects.equals(dbPass, calcPass)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
         IdGenerator idGenerator = new IdGenerator(0);
         String token = "" + idGenerator.nextId();
+        log.info("log token --[{}]", token);
         CookieUtil.addCookie(response, token, user, redisService);
+        log.info("login success ");
         return Result.success(token);
     }
 

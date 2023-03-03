@@ -1,20 +1,14 @@
 package com.snow.myseckill.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.snow.myseckill.pojo.Goods;
 import com.snow.myseckill.redis.Keyprefix;
 import com.snow.myseckill.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -67,6 +61,13 @@ public class RedisService {
     public boolean hasKey(Keyprefix keyprefix, String key) {
         Objects.requireNonNull(key, "查询的key为空");
         return Boolean.TRUE.equals(redisTemplate.hasKey(keyprefix.getprefix() + key));
+    }
+
+    public void expire(Keyprefix keyprefix, String key) {
+        Long expire = redisTemplate.getExpire(keyprefix.getprefix() + key, TimeUnit.SECONDS);
+        if (expire == null || expire <= 60 * 60) {
+            redisTemplate.expire(keyprefix.getprefix() + key, keyprefix.expireSeconds(), TimeUnit.SECONDS);
+        }
     }
 
 }

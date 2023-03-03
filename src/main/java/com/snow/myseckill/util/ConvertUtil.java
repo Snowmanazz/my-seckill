@@ -18,22 +18,22 @@ public class ConvertUtil {
         } else if (clazz == double.class || clazz == Double.class) {
             return (T) Double.valueOf(value);
         } else {
-            return JSON.parseObject(JSONObject.toJSONString(o), clazz);
+            return JSON.parseObject(JSON.parse(JSON.toJSONString(o)).toString(), clazz);
         }
     }
 
     public static <T> String beanToString(T value) {
-        if (value == null){
+        if (value == null) {
             return null;
         }
         if (value instanceof Number || value instanceof String) {
             return String.valueOf(value);
-        }else {
+        } else {
             return JSON.toJSONString(value);
         }
     }
 
-    public static <T> T stringToBean(String value, Class<T> clazz){
+    public static <T> T stringToBean(String value, Class<T> clazz) {
         if (value == null || clazz == null) {
             return null;
         }

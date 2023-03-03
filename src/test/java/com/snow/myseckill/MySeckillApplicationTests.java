@@ -18,12 +18,10 @@ class MySeckillApplicationTests {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private UserMappper userMappper;
+
     @Autowired
     private SecKillGoodsMapper goodsMapper;
-    @Autowired
-    private OrderMapper orderMapper;
+
 
     @Autowired
     MQSender mqSender;
@@ -37,8 +35,8 @@ class MySeckillApplicationTests {
     }
     @Test
     void testMysql(){
-        System.out.println(userMappper.selectById(18217272828L));
-        System.out.println(goodsMapper.getGoodsVoByGoodsId(1));
+        Integer integer = goodsMapper.reduceGoods(1, 1);
+        System.out.println(integer);
     }
 
     @Test
