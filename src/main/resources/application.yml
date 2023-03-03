@@ -4,6 +4,9 @@ server:
     context-path: /
 # 数据源配置
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     username: root
     password: 123456

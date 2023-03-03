@@ -46,6 +46,10 @@ public class RedisService {
         }
     }
 
+    public void delete(Keyprefix keyprefix, String key) {
+        redisTemplate.delete(keyprefix + key);
+    }
+
     public <T> T get(Keyprefix keyprefix, String key, Class<T> clazz) {
         Objects.requireNonNull(key, "获取缓存的key为空");
         Objects.requireNonNull(clazz, "获取缓存的值class为空");

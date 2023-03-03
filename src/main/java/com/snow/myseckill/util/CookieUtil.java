@@ -38,20 +38,17 @@ public class CookieUtil {
      * @param redisService
      * @return
      */
-    public static User getCookie(HttpServletRequest request, RedisService redisService) {
+    public static String getCookieToken(HttpServletRequest request, RedisService redisService) {
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             try {
                 if (cookie != null && TOKEN.equals(URLDecoder.decode(cookie.getName(), "utf-8"))) {
                     String token = cookie.getValue();
                     if (StringUtils.isNoneBlank(token)) {
-                        User user = redisService.get(UserKeyPrefix.TOKEN, token, User.class);
-                        if (user != null) {
-                            //刷新token
-                            redisService.expire(UserKeyPrefix.TOKEN, token);
-                        }
-                        return user;
+                        //刷新token
+                        redisService.expire(UserKeyPrefix.TOKEN, token);
                     }
+                    return token;
                 }
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);

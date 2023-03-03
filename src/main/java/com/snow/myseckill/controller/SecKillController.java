@@ -5,11 +5,13 @@ import com.snow.myseckill.result.CodeMsg;
 import com.snow.myseckill.result.Result;
 import com.snow.myseckill.service.RedisService;
 import com.snow.myseckill.service.SeckillService;
+import com.snow.myseckill.service.UserService;
 import com.snow.myseckill.util.CookieUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,10 +30,14 @@ public class SecKillController {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private UserService userService;
+
     @ApiOperation(value = "秒杀一 无任何限制")
-    @RequestMapping("/start")
+    @PostMapping("/start")
     public Result<CodeMsg> start(HttpServletRequest request, @RequestParam("goodsId") Long goodsId) {
-        User user = CookieUtil.getCookie(request, redisService);
+        String token = CookieUtil.getCookieToken(request, redisService);
+        User user = userService.getUserByToken(token);
         //user是否为空
         if (user == null) {
             log.error(CodeMsg.SESSION_ERROR.getMsg());

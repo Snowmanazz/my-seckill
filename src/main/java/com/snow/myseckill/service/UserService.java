@@ -5,6 +5,7 @@ import com.snow.myseckill.result.CodeMsg;
 import com.snow.myseckill.result.Result;
 import com.snow.myseckill.vo.LoginVo;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface UserService {
@@ -15,4 +16,9 @@ public interface UserService {
 
     Result<String> login(HttpServletResponse response, LoginVo loginVo);
 
+    Result<CodeMsg> check(HttpServletRequest request);
+
+    void logout(HttpServletRequest request, HttpServletResponse response);
+
+    User getUserByToken(String token);
 }

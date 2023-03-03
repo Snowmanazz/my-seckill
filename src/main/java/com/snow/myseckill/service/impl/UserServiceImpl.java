@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
@@ -29,8 +31,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedisService redisService;
-
-    private static final String COOKIE_TOKEN = "token";
 
     @Override
     public User getById(long id) {
@@ -75,14 +75,32 @@ public class UserServiceImpl implements UserService {
         return Result.success(token);
     }
 
+    @Override
+    public Result<CodeMsg> check(HttpServletRequest request) {
+        String token = CookieUtil.getCookieToken(request, redisService);
+        User user = getUserByToken(token);
+        return user != null ? Result.success(CodeMsg.SUCCESS) : Result.error(CodeMsg.SESSION_ERROR);
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = CookieUtil.getCookieToken(request, redisService);
+        redisService.delete(UserKeyPrefix.TOKEN, token);
+        Cookie cookie = new Cookie(CookieUtil.TOKEN, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+
     /**
      * 根据token获取用户信息
      *
-     * @param response
      * @param token
      * @return
      */
-    private User getUserByToken(HttpServletResponse response, String token) {
+    @Override
+    public User getUserByToken(String token) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
@@ -90,9 +108,6 @@ public class UserServiceImpl implements UserService {
         if (!exists) {
             return null;
         }
-        User user = redisService.get(UserKeyPrefix.TOKEN, token, User.class);
-        CookieUtil.addCookie(response, token, user, redisService);
-        return user;
-
+        return redisService.get(UserKeyPrefix.TOKEN, token, User.class);
     }
 }
