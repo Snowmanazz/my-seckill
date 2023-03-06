@@ -54,19 +54,13 @@ public class MvcInterceptor implements HandlerInterceptor {
 
 
     private void returnJson(HttpServletResponse response) {
-        PrintWriter writer = null;
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json; charset=utf-8");
-        try {
-            writer = response.getWriter();
+        try (PrintWriter writer = response.getWriter()) {
             Result<CodeMsg> result = Result.error(CodeMsg.SESSION_ERROR);
             writer.print(JSONObject.toJSONString(result));
         } catch (IOException e) {
             log.error("拦截器输出流异常[{}]", e.getMessage());
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
     }
 }
