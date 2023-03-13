@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+    <!--去各个环境里面找log的路径 -->
+    <springProperty scope="context" name="LOG_BASE_HOME" source="log.dir"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg  %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- System log -->
+    <appender name="file.log.sys"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <file>${LOG_BASE_HOME}/ing/sys.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_BASE_HOME}/sys/%d{yyyyMMdd}.sys.log</fileNamePattern>
+            <maxHistory>30</maxHistory> <!-- 最多保存15天历史文件 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg  %n</pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="file.log.sys"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>

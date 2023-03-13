@@ -46,3 +46,6 @@ spring:
           # 以本处为例：第一次间隔 5 秒，第二次间隔 10 秒，以此类推
           multiplier: 2
         default-requeue-rejected: false
+#r日志目录
+log:
+  dir: ./logs
