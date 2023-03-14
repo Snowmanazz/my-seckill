@@ -40,6 +40,9 @@ public class CookieUtil {
      */
     public static String getCookieToken(HttpServletRequest request, RedisService redisService) {
         Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) {
+            return null;
+        }
         for (Cookie cookie : cookies) {
             try {
                 if (cookie != null && TOKEN.equals(URLDecoder.decode(cookie.getName(), "utf-8"))) {

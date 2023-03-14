@@ -1,13 +1,9 @@
 package com.snow.myseckill.controller;
 
 import com.snow.myseckill.exception.GlobalException;
-import com.snow.myseckill.pojo.User;
-import com.snow.myseckill.redis.UserKeyPrefix;
 import com.snow.myseckill.result.CodeMsg;
 import com.snow.myseckill.result.Result;
-import com.snow.myseckill.service.RedisService;
 import com.snow.myseckill.service.UserService;
-import com.snow.myseckill.util.CookieUtil;
 import com.snow.myseckill.vo.LoginVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
