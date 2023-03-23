@@ -58,7 +58,7 @@ public class SeckillService {
             log.error(CodeMsg.SECKILL_FAILED.getMsg());
             return Result.error(CodeMsg.SECKILL_OVER);
         }
-        log.info("秒杀还未结果---------");
+        log.info("秒杀还未结束---------");
         //判断重复秒杀
         boolean isSecKill = redisService.hasKey(OrderKeyPrefix.ORDER_KEY, OrderKeyPrefix.orderKey(user.getId(), goodsId));
         if (isSecKill) {

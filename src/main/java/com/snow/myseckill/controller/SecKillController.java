@@ -1,5 +1,6 @@
 package com.snow.myseckill.controller;
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.snow.myseckill.pojo.User;
 import com.snow.myseckill.result.CodeMsg;
 import com.snow.myseckill.result.Result;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 @Api(tags = "秒杀")
 @Slf4j
@@ -33,9 +35,15 @@ public class SecKillController {
     @Autowired
     private UserService userService;
 
+    //基于令牌桶算法的限流实现类
+    RateLimiter rateLimiter = RateLimiter.create(10);
+
     @ApiOperation(value = "秒杀一 无任何限制")
     @PostMapping("/start")
     public Result<CodeMsg> start(HttpServletRequest request, @RequestParam("goodsId") Long goodsId) {
+        if (!rateLimiter.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
+            return Result.error(CodeMsg.ACCESS_LIMIT_REACHED);
+        }
         String token = CookieUtil.getCookieToken(request, redisService);
         User user = userService.getUserByToken(token);
         //user是否为空

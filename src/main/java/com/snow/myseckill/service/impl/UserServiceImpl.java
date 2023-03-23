@@ -11,6 +11,7 @@ import com.snow.myseckill.service.UserService;
 import com.snow.myseckill.util.CookieUtil;
 import com.snow.myseckill.util.IdGenerator;
 import com.snow.myseckill.util.MD5Util;
+import com.snow.myseckill.util.TokenGenerator;
 import com.snow.myseckill.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
         if (!Objects.equals(dbPass, calcPass)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
-        IdGenerator idGenerator = new IdGenerator(0);
+        IdGenerator idGenerator = TokenGenerator.getInstance();
         String token = "" + idGenerator.nextId();
         log.info("log token --[{}]", token);
         CookieUtil.addCookie(response, token, user, redisService);
